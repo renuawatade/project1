@@ -1,0 +1,31 @@
+#include<reg51.h>
+#include "LCD.h"
+
+sbit rd_adc=P3^0;
+sbit wr_adc=P3^1;
+sbit intr_adc=P3^2;
+
+void convert_display(unsigned char);
+void main()
+{
+	unsigned char value;
+	lcd_init();
+	lcd_string("Temperature:");
+	P1=0XFF;
+	P2=0X00;
+	intr_adc=1;
+	rd_adc=1;
+	wr_adc=1;
+	while(1)
+	{
+		wr_adc=0;
+		lcd_delay(1);
+		wr_adc=1;
+		while(intr_adc==1);
+		rd_adc=0;
+		value=P1;
+		convert_display(value);
+		lcd_delay(1000);
+		rd_adc=1;
+	}
+}

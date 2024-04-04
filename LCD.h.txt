@@ -1,0 +1,54 @@
+sfr LCD_Port=0xA0;
+sbit rs=P2^0;
+sbit en =P2^1;
+
+void lcd_delay(unsigned int count)
+{
+	int i,j;
+	for(i=0;i<count;i++)
+	for(j=0;j<922;j++);
+}
+
+void lcd_cmd(unsigned int command){
+rs=0;
+P0=command;
+en=1;
+lcd_delay(40);
+en=0;
+}
+
+void lcd_data(unsigned int dataa)
+{  rs=1;
+  P0=dataa;
+  en=1;
+  lcd_delay(40);
+  en=0;
+}
+
+void lcd_init(void){
+
+rs=0;
+en=0;
+P0=0;
+lcd_cmd(0x38);
+lcd_delay(40);
+lcd_cmd(0x0C);
+lcd_delay(40);
+lcd_cmd(0x06);
+lcd_delay(40);
+lcd_cmd(0x01);
+lcd_delay(40);
+lcd_cmd(0x80);
+lcd_delay(40);
+}
+
+
+void lcd_string(unsigned char *ptr)
+{
+unsigned char i=0;
+while (ptr[i]!='\0')
+{ lcd_data(ptr[i]);
+ lcd_delay(1);
+i++;
+}
+}
